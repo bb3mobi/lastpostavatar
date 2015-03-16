@@ -31,7 +31,7 @@ class listener implements EventSubscriberInterface
 	 * @param \phpbb\path_helper					$path_helper	phpBB path helper
 	 * @param \phpbb\db\driver\driver_interface		$db				Database object
 	 */
-	 
+
 	public function __construct(\phpbb\user $user, \phpbb\path_helper $path_helper, \phpbb\db\driver\driver_interface $db)
 	{
 		$this->user = $user;
