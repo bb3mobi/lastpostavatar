@@ -26,11 +26,11 @@ class listener implements EventSubscriberInterface
 	const MAX_SIZE = 30; // Max size img
 
 	/**
-	 * Constructor of event listener
-	 * @param \phpbb\user							$user			User object
-	 * @param \phpbb\path_helper					$path_helper	phpBB path helper
-	 * @param \phpbb\db\driver\driver_interface		$db				Database object
-	 */
+	* Constructor of event listener
+	* @param \phpbb\user							$user			User object
+	* @param \phpbb\path_helper					$path_helper	phpBB path helper
+	* @param \phpbb\db\driver\driver_interface		$db				Database object
+	*/
 
 	public function __construct(\phpbb\user $user, \phpbb\path_helper $path_helper, \phpbb\db\driver\driver_interface $db)
 	{
