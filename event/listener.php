@@ -28,7 +28,7 @@ class listener implements EventSubscriberInterface
 	/**
 	* Constructor of event listener
 	* @param \phpbb\user							$user			User object
-	* @param \phpbb\path_helper					$path_helper	phpBB path helper
+	* @param \phpbb\path_helper						$path_helper	phpBB path helper
 	* @param \phpbb\db\driver\driver_interface		$db				Database object
 	*/
 
@@ -42,12 +42,16 @@ class listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return array(
+			/* Forumlist last avatar */
 			'core.display_forums_modify_sql'			=> 'add_user_sql',
-			'core.display_forums_modify_template_vars'	=> 'forums_last_post_avatar',
 			'core.display_forums_modify_forum_rows'		=> 'forums_modify_forum_rows',
-
+			'core.display_forums_modify_template_vars'	=> 'forums_last_post_avatar',
+			/* Viewforum last avatar */
 			'core.viewforum_modify_topics_data'			=> 'add_user_viewforum_sql',
 			'core.viewforum_modify_topicrow'			=> 'viewforum_last_post_avatar',
+			/* Search last avatar */
+			'core.search_get_topic_data'				=> 'add_user_search_sql',
+			'core.search_modify_tpl_ary'				=> 'search_last_post_avatar',
 			/* Connect Recent topics By PayBas */
 			'paybas.recenttopics.sql_pull_topics_data'	=> 'add_user_rct_sql',
 			'paybas.recenttopics.modify_tpl_ary'		=> 'rct_last_post_avatar',
@@ -60,7 +64,7 @@ class listener implements EventSubscriberInterface
 		$sql_ary = $event['sql_ary'];
 		$sql_ary['LEFT_JOIN'][] = array(
 			'FROM' => array(USERS_TABLE => 'u'),
-			'ON' => "u.user_id = f.forum_last_poster_id"
+			'ON' => "u.user_id = f.forum_last_poster_id AND forum_type != " . FORUM_CAT
 		);
 		$sql_ary['SELECT'] .= ', u.user_avatar, u.user_avatar_type, u.user_avatar_width, u.user_avatar_height';
 		$event['sql_ary'] = $sql_ary;
@@ -72,12 +76,15 @@ class listener implements EventSubscriberInterface
 		$parent_id = $event['parent_id'];
 		$row = $event['row'];
 
-		$forum_rows[$parent_id]['user_avatar'] = $row['user_avatar'];
-		$forum_rows[$parent_id]['user_avatar_type'] = $row['user_avatar_type'];
-		$forum_rows[$parent_id]['user_avatar_width'] = $row['user_avatar_width'];
-		$forum_rows[$parent_id]['user_avatar_height'] = $row['user_avatar_height'];
-
-		$event['forum_rows'] = $forum_rows;
+		if ($row['forum_last_post_time'] > $forum_rows[$parent_id]['user_last_post_time'])
+		{
+			$forum_rows[$parent_id]['user_last_post_time'] = $row['forum_last_post_time'];
+			$forum_rows[$parent_id]['user_avatar'] = $row['user_avatar'];
+			$forum_rows[$parent_id]['user_avatar_type'] = $row['user_avatar_type'];
+			$forum_rows[$parent_id]['user_avatar_width'] = $row['user_avatar_width'];
+			$forum_rows[$parent_id]['user_avatar_height'] = $row['user_avatar_height'];
+			$event['forum_rows'] = $forum_rows;
+		}
 	}
 
 	/* User avatar Last post in forum */
@@ -125,6 +132,26 @@ class listener implements EventSubscriberInterface
 			$userrow = $this->avatar_img_resize($this->userrow[$row['topic_last_poster_id']]);
 			$topic_row['LAST_POST_AUTHOR_FULL'] .= '<span class="lastpostavatar">' . phpbb_get_user_avatar($userrow) . '</span>';
 			$event['topic_row'] = $topic_row;
+		}
+	}
+
+	/** Data request reccent topics */
+	public function add_user_search_sql($event)
+	{
+		$event['sql_from'] .= ' LEFT JOIN ' . USERS_TABLE . ' us ON (us.user_id = t.topic_last_poster_id)';
+		$event['sql_select'] .= ', us.user_avatar, us.user_avatar_type, us.user_avatar_width, us.user_avatar_height';
+	}
+
+	/* User avatar Last post in recent topics */
+	public function search_last_post_avatar($event)
+	{
+		$row = $event['row'];
+		$tpl_ary = $event['tpl_ary'];
+		if (isset($tpl_ary['LAST_POST_AUTHOR_FULL']))
+		{
+			$row = $this->avatar_img_resize($row);
+			$tpl_ary['LAST_POST_AUTHOR_FULL'] .= '<span class="lastpostavatar">' . phpbb_get_user_avatar($row) . '</span>';
+			$event['tpl_ary'] = $tpl_ary;
 		}
 	}
 
