@@ -76,7 +76,7 @@ class listener implements EventSubscriberInterface
 		$parent_id = $event['parent_id'];
 		$row = $event['row'];
 
-		if ($row['forum_last_post_time'] > $forum_rows[$parent_id]['user_last_post_time'])
+		if (isset($forum_rows[$parent_id]['user_last_post_time']) && $row['forum_last_post_time'] > $forum_rows[$parent_id]['user_last_post_time'])
 		{
 			$forum_rows[$parent_id]['user_last_post_time'] = $row['forum_last_post_time'];
 			$forum_rows[$parent_id]['user_avatar'] = $row['user_avatar'];
