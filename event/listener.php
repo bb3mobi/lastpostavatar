@@ -76,15 +76,16 @@ class listener implements EventSubscriberInterface
 		$parent_id = $event['parent_id'];
 		$row = $event['row'];
 
-		if (isset($forum_rows[$parent_id]['user_last_post_time']) && $row['forum_last_post_time'] > $forum_rows[$parent_id]['user_last_post_time'])
+		if (isset($forum_rows[$parent_id]['user_last_post_time']) && $forum_rows[$parent_id]['user_last_post_time'] > $row['forum_last_post_time'])
 		{
-			$forum_rows[$parent_id]['user_last_post_time'] = $row['forum_last_post_time'];
-			$forum_rows[$parent_id]['user_avatar'] = $row['user_avatar'];
-			$forum_rows[$parent_id]['user_avatar_type'] = $row['user_avatar_type'];
-			$forum_rows[$parent_id]['user_avatar_width'] = $row['user_avatar_width'];
-			$forum_rows[$parent_id]['user_avatar_height'] = $row['user_avatar_height'];
-			$event['forum_rows'] = $forum_rows;
+			return;
 		}
+		$forum_rows[$parent_id]['user_last_post_time'] = $row['forum_last_post_time'];
+		$forum_rows[$parent_id]['user_avatar'] = $row['user_avatar'];
+		$forum_rows[$parent_id]['user_avatar_type'] = $row['user_avatar_type'];
+		$forum_rows[$parent_id]['user_avatar_width'] = $row['user_avatar_width'];
+		$forum_rows[$parent_id]['user_avatar_height'] = $row['user_avatar_height'];
+		$event['forum_rows'] = $forum_rows;
 	}
 
 	/* User avatar Last post in forum */
