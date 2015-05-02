@@ -136,14 +136,14 @@ class listener implements EventSubscriberInterface
 		}
 	}
 
-	/** Data request reccent topics */
+	/** Search active topics */
 	public function add_user_search_sql($event)
 	{
 		$event['sql_from'] .= ' LEFT JOIN ' . USERS_TABLE . ' us ON (us.user_id = t.topic_last_poster_id)';
 		$event['sql_select'] .= ', us.user_avatar, us.user_avatar_type, us.user_avatar_width, us.user_avatar_height';
 	}
 
-	/* User avatar Last post in recent topics */
+	/* User avatar Last post in search active topics */
 	public function search_last_post_avatar($event)
 	{
 		$row = $event['row'];
@@ -162,7 +162,7 @@ class listener implements EventSubscriberInterface
 		$sql_array = $event['sql_array'];
 		$sql_array['LEFT_JOIN'][] = array(
 			'FROM' => array(USERS_TABLE => 'u'),
-			'ON' => "u.user_id = f.forum_last_poster_id"
+			'ON' => "u.user_id = t.topic_last_poster_id"
 		);
 		$sql_array['SELECT'] .= ', u.user_avatar, u.user_avatar_type, u.user_avatar_width, u.user_avatar_height';
 		$event['sql_array'] = $sql_array;
