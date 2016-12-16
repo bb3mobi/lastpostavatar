@@ -2,26 +2,23 @@
     "name": "bb3mobi/lastpostavatar",
     "type": "phpbb-extension",
     "description": "Last post user avatar",
-    "homepage": "http://phpbbguru.net",
-    "version": "1.0.2",
+    "homepage": "http://bb3.mobi",
+    "version": "1.0.3",
     "time": "2015-01-01",
     "license": "GPL-2.0",
     "authors": [
         {
             "name": "Anvar",
             "email": "anvar.all@mail.ru",
-            "homepage": "http://bb3.mobi",
+            "homepage": "http://apwa.ru",
             "role": "Developer phpBB"
         }
     ],
     "require": {
         "php": ">=5.3.3"
     },
-    "require-dev": {
-      "phpbb/epv": "dev-master"
-    },
     "extra": {
-        "display-name": "Last Post Avatar",
+        "display-name": "Last Post Avatar & Topic Avatar",
         "soft-require": {
         "phpbb/phpbb": "3.1.*@dev"
         }
