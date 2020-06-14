@@ -2,8 +2,8 @@ services:
     bb3mobi.lastpostavatar.listener:
         class: bb3mobi\lastpostavatar\event\listener
         arguments:
-            - @user
-            - @path_helper
-            - @dbal.conn
+            - '@user'
+            - '@path_helper'
+            - '@dbal.conn'
         tags:
             - { name: event.listener }
